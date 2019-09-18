@@ -1,0 +1,77 @@
+version: '3.1'
+
+services:    
+  # Prometheus
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus    
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090  
+    networks:
+      - app-network
+
+  # Grafana
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    networks:
+      - app-network
+    restart: always
+
+  # Alertmanager      
+  alertmanager:
+    image: idealista/prom2teams
+    container_name: alertmanager
+    ports:
+      - 8089:8089
+    environment:
+      - PROM2TEAMS_CONNECTOR="https://outlook.office.com/webhook/45bcf8c5-9e58-45b9-8c3a-3bf5349005cf@8c3dad1d-b6bc-4f8b-939b-8263372eced6/IncomingWebhook/3d00c69bcc834a25bf1feda1d4becd6a/ffd415cf-de42-4a1f-a127-7c9a0d3c12af" 
+    networks:
+      - app-network
+ 
+  # Inluxdb
+  influxdb: 
+    image: influxdb:latest
+    container_name: influxdb
+    restart: unless-stopped
+    tty: true
+    networks:
+      - app-network
+    ports:
+      - 8086:8086
+
+  # Chronograf
+  chronograf: 
+    image: chronograf:latest
+    container_name: chronograf
+    restart: unless-stopped
+    tty: true
+    networks:
+      - app-network
+    ports:
+      - 8888:8888
+ 
+  #Kapacitor  
+  kapacitor: 
+    image: kapacitor:latest
+    container_name: kapacitor
+    restart: unless-stopped
+    tty: true
+    networks:
+      - app-network
+    ports:
+      - 9092:9092
+
+networks:
+  app-network:
+    driver: bridge
