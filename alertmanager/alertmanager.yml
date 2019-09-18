@@ -4,6 +4,6 @@ route:
 receivers:
 - name: "team-receiver"
   webhook_configs:
-  - url: 'http://alertteam:8089'
+  - url: 'http://alertteam:8089/v2/Connector'
     send_resolved: true
 
