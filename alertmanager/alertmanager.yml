@@ -1,0 +1,9 @@
+route:
+  receiver: 'team-receiver'
+  group_by: [alertname]
+receivers:
+- name: "team-receiver"
+  webhook_configs:
+  - url: 'http://alertteam:8089'
+    send_resolved: true
+

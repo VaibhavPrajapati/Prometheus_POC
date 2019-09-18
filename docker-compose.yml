@@ -1,18 +1,16 @@
-version: '3.1'
+version: '3'
 
 services:    
   # Prometheus
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:latest
     container_name: prometheus    
     volumes:
-      - ./prometheus/:/etc/prometheus/
+      - ./prometheus/:/prometheus_data/
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--config.file=/prometheus_data/prometheus.yml'
     ports:
-      - 9090:9090  
+      - 9090:9090 
     networks:
       - app-network
 
@@ -28,14 +26,14 @@ services:
       - app-network
     restart: always
 
-  # Alertmanager      
-  alertmanager:
+  # Alertteam  
+  alertteam:
     image: idealista/prom2teams
-    container_name: alertmanager
+    container_name: alertteam
     ports:
       - 8089:8089
     environment:
-      - PROM2TEAMS_CONNECTOR="https://outlook.office.com/webhook/45bcf8c5-9e58-45b9-8c3a-3bf5349005cf@8c3dad1d-b6bc-4f8b-939b-8263372eced6/IncomingWebhook/3d00c69bcc834a25bf1feda1d4becd6a/ffd415cf-de42-4a1f-a127-7c9a0d3c12af" 
+      - PROM2TEAMS_CONNECTOR="https://outlook.office.com/webhook/e6d3c9f5-1b43-4d16-80bd-993a13d59db9@8c3dad1d-b6bc-4f8b-939b-8263372eced6/IncomingWebhook/33124c1c83064a41b2bddc031fbe6e52/ffd415cf-de42-4a1f-a127-7c9a0d3c12af" 
     networks:
       - app-network
  
@@ -60,6 +58,21 @@ services:
       - app-network
     ports:
       - 8888:8888
+
+  # AlertManager
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./alertmanager/:/alertmanager_data/
+    command:
+      - '--config.file=/alertmanager_data/alertmanager.yml'
+    networks:
+      - app-network
+    ports:
+      - 9093:9093
  
   #Kapacitor  
   kapacitor: 
@@ -71,7 +84,9 @@ services:
       - app-network
     ports:
       - 9092:9092
-
+    environment:
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+ 
 networks:
   app-network:
     driver: bridge
