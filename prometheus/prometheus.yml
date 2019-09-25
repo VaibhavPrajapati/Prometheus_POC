@@ -26,5 +26,21 @@ scrape_configs:
     # scheme defaults to 'http'.
 
     static_configs:
-            - targets: ['10.21.12.120:9182']
+            - targets: ['10.21.12.120:9182','10.11.32.14:9182']
 
+
+  - job_name: blackbox
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+     - targets:
+        - https://www.robustperception.io/
+        - http://prometheus.io/blog
+    relabel_configs:
+     - source_labels: [__address__]
+       target_label: __param_target
+     - source_labels: [__param_target]
+       target_label: instance
+     - target_label: __address__
+       replacement: 10.21.12.131:9115 # The blackbox exporter.
