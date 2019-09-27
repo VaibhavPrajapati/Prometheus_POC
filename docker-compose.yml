@@ -25,7 +25,12 @@ services:
     networks:
       - app-network
     restart: always
-
+  
+  blackbox:
+    image: prom/blackbox-exporter
+    container_name: blackbox
+    networks:
+      - app-network
   # Alertteam  
   alertteam:
     image: idealista/prom2teams
