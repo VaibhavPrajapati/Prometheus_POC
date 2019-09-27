@@ -36,7 +36,7 @@ scrape_configs:
     static_configs:
      - targets:
         - https://www.robustperception.io/
-        - http://prometheus.io/blog
+        - https://prometheus.io/blog
         - https://unix.stackexchange.com
         - https://discoposse.com
         - http://alertteam:8089
