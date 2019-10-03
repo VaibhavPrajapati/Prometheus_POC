@@ -73,7 +73,7 @@ services:
     volumes:
       - ./alertmanager/:/alertmanager_data/
     command:
-      - '--config.file=/alertmanager_data/alertmanager.yml'
+      - '--config.file=/alertmanager_data/alertmanager.yml -web.external-url=http://10.21.12.131:9093/'
     networks:
       - app-network
     ports:

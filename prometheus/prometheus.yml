@@ -35,16 +35,14 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
      - targets:
-        - https://www.robustperception.io/
-        - https://prometheus.io/blog
-        - https://unix.stackexchange.com
-        - https://discoposse.com
-        - http://alertteam:8089
-        - http://influxdb:8086
-        - http://alertmanager:9093
-        - https://hub.docker.com
-        - http://ec2-52-53-177-18.us-west-1.compute.amazonaws.com
-        - https://github.com/        
+       - https://www.robustperception.io/
+       - https://hub.docker.com/v2/user/
+       - https://unix.stackexchange.com
+       - https://discoposse.com
+       - https://hub.docker.com
+       - http://ec2-52-53-177-18.us-west-1.compute.amazonaws.com
+       - https://github.com/
+       - https://blogpage.com/blogs       
     relabel_configs:
      - source_labels: [__address__]
        target_label: __param_target

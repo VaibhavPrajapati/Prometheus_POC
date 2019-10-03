@@ -1,9 +1,25 @@
+global:
+  resolve_timeout: 5m
 route:
-  receiver: 'team-receiver'
-  group_by: [alertname]
+  group_by: ['job']
+  # Send all notifications to me.
+  receiver: ipeacocks-alert
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  routes:
+  - match:
+      alertname: InstanceDown
+    receiver: 'ipeacocks-alert'
+
 receivers:
-- name: "team-receiver"
-  webhook_configs:
-  - url: 'http://alertteam:8089/v2/Connector'
-    send_resolved: true
+- name: ipeacocks-alert
+  email_configs:
+  - to: receiver@organization.com
+    from: sender@organization.com
+    # Your smtp server address
+    smarthost: smtp-mail.outlook.com:587
+    auth_username: sender@organization.com
+    auth_identity: sender@organization.com
+    auth_password: password
 
